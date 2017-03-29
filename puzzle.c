@@ -4,7 +4,7 @@
  *	      (c) 2017 AED
  * Authors:    AED Team
  * Last modified: ACR 2017-03-19
- *porra
+ *
  * COMMENTS
  *		implements functions for type t_puzzle
  *
