@@ -71,14 +71,8 @@ int main(int argc, char *argv[])
   /* read and save the Puzzles in the list */
   lm = savePuzzles( fmIn );
 
-  /* compute the matrix function values */
-  ComputeALLPuzzlesFunctions( lm );
-
   /* print list (optional) */
-  PrintList( lm );
-
-  /* print the ordered matrix function values */
-  /*PrintOrderedFunctionValues( lm );*/
+  outputFile(fileName, lm);
 
   /* free all alocated memory */
   libertaLista( lm, FreeItem );

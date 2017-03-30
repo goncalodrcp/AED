@@ -24,7 +24,8 @@
 
 void erroMemoria(char *msg);
 t_lista *savePuzzles( FILE *fm);
-void PrintList(t_lista *lm);
+void PrintList(t_lista *lm, FILE *fm);
+void outputFile(char *inName, t_lista* lp);
 void FreeItem(Item this);
 
 

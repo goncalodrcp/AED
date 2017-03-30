@@ -22,10 +22,11 @@
 typedef struct _t_puzzle t_puzzle;
 
 /* interface functions for the t_puzzle */
-t_puzzle *NewPuzzle(int size);
-float GetPuzzleElement(t_puzzle *mA, int pI, int pJ);
+t_puzzle* NewPuzzle(int *puz_dt);
+int GetPuzzleElement(t_puzzle *mA, int pI, int pJ);
+int GetPuzzleInfo(t_puzzle *mA, int info);
 void SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value);
 void FreePuzzle(t_puzzle *mA);
-void PrintPuzzle(t_puzzle *mA);
+void PrintPuzzle(t_puzzle *mA, FILE * fp);
 
 #endif

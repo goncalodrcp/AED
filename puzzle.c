@@ -15,8 +15,8 @@
 #include "utils.h"
 
 struct _t_puzzle {
-  float **values;
-  int l, c, x, y, var;
+  int **values;
+  int l, c, x, y, var, pts;
 };
 
 /******************************************************************************
@@ -26,29 +26,33 @@ struct _t_puzzle {
  * Returns: (Puzzle *) pointer to actual word (string)
  * Side-Effects: none
  *
- * Description: returns the new Puzzle
+ * Description: returns the new Puzzle 
  *****************************************************************************/
-t_puzzle *NewPuzzle(int size)
+t_puzzle * NewPuzzle(int *puz_dt )
 {
-
+  t_puzzle * mA;
   int pI, pJ;
   pI = pJ = 0;
 
   /* allocate space for the Puzzle */
-  t_puzzle *Mat = (t_puzzle*) malloc(sizeof(t_puzzle));
-  Mat->values = (float**) malloc(size*sizeof(float*));
-  for ( pI = 0; pI < size; pI++ )
-    Mat->values[pI] = (float *) malloc(size*sizeof(float));
-
+  mA = (t_puzzle*) malloc(sizeof(t_puzzle));
+  mA->values = (int**) malloc(puz_dt[0] * sizeof(int*));
+  for ( pI = 0; pI < puz_dt[0]; pI++ )
+    mA->values[pI] = (int *) malloc(puz_dt[1] * sizeof(int));
+ 
   /* initiate Puzzle */
-  for ( pI =0; pI < size; pI++ )
-    for ( pJ =0; pJ < size; pJ++ )
-      Mat->values[pI][pJ] = 0.0;
+  for ( pI =0; pI < puz_dt[0]; pI++ )
+    for ( pJ =0; pJ < puz_dt[1]; pJ++ )
+      mA->values[pI][pJ] = 0;
+  
+  mA->l = puz_dt[0];
+  mA->c = puz_dt[1];
+  mA->var = puz_dt[2];
+  mA->x = puz_dt[3];
+  mA->y = puz_dt[4];
+  mA->pts = 0;
 
-  Mat->fm = 0;
-  Mat->size = size;
-
-  return Mat;
+  return mA;
 
 }
 
@@ -63,10 +67,45 @@ t_puzzle *NewPuzzle(int size)
  *
  * Description: returns an element in the Puzzle (mA) in position (pI,pJ)
  *****************************************************************************/
-float GetPuzzleElement(t_puzzle *mA, int pI, int pJ)
+int GetPuzzleElement(t_puzzle *mA, int pI, int pJ)
 {
 
   return mA->values[pI][pJ];
+
+}
+
+/******************************************************************************
+ * GetPuzzleInfo(t_puzzle *mA, int info)
+ *
+ * Arguments: mA - (Puzzle *) the Puzzle
+ *            info - (int) what information about the puzzle is neded (1-Lines;
+                      2-Columns; 3-Variable; 4-Line chosen; 5-Column chosen;
+                      6-Points)
+ *          
+ * Returns: (float) the value of the Puzzle that is in (pI, pJ)
+ * Side-Effects: none
+ *
+ * Description: returns an element in the Puzzle (mA) in position (pI,pJ)
+ *****************************************************************************/
+
+int GetPuzzleInfo(t_puzzle *mA, int info)
+{
+  switch(info) {
+    case '1' :
+      return mA->l;
+    case '2' :
+      return mA->c;
+    case '3' :
+      return mA->x;
+    case '4' :
+      return mA->y;
+    case '5' :
+      return mA->var;
+    case '6' :
+      return mA->pts;
+    default :
+      return -1;
+   }
 
 }
 
@@ -76,8 +115,8 @@ float GetPuzzleElement(t_puzzle *mA, int pI, int pJ)
  * Arguments: mA    - (t_puzzle *) the Puzzle
  *            pI    - (int) row of the element
  *            pJ    - (int) column if the element
- *            value - (float) value to include int the Puzzle
- * Returns: (void) nothing
+ *            value - (float) value to include int the Puzzle 
+ * Returns: (void) nothing 
  * Side-Effects: none
  *
  * Description: function to include an element (value) in the Puzzle (mA),
@@ -93,7 +132,7 @@ void SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value)
 }
 
 
-
+  
 
 /******************************************************************************
  * FreePuzzle(t_puzzle *mA)
@@ -107,8 +146,8 @@ void SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value)
 void FreePuzzle(t_puzzle *mA)
 {
   int i=0;
-
-  for(i=0; i<mA->size; i++)
+  
+  for(i=0; i<mA->l; i++)
     free(mA->values[i]);
   free(mA->values);
   free(mA);
@@ -125,58 +164,23 @@ void FreePuzzle(t_puzzle *mA)
  *
  * Description: print the Puzzle pointed by mA
  *****************************************************************************/
-void PrintPuzzle(t_puzzle *mA)
+void PrintPuzzle(t_puzzle *mA, FILE* fp)
 {
-
+ 
   int pI, pJ;
 
-  printf( "Puzzle:\n" );
-  for( pI = 0; pI < mA->size ; pI++ ){
-    for( pJ = 0; pJ < mA->size ; pJ++ )
-      printf( "%.2f ", GetPuzzleElement( mA, pI, pJ ) );
-    printf( "\n" );
-  }
-
-  printf( "With Puzzle function value: %.2f\n", GetFunctionPuzzleValue( mA ) );
-
-  return;
-
-}
-
-void write_file(char *filename, t_lista* lp)
-{
-  FILE *f;
-  char *nome;
-  int i = 0;
-  int j = 0;
-  int count = 0;
-
-  nome = (char*)malloc((strlen(filename)+1)*sizeof(char)); /* -- Insert code for memory allocation,  remember to add space for the dot (.), the filename extension and the string termination --*/
-  if ( nome == NULL ) {
-    fprintf ( stderr, "ERROR: not enough memory available!\n" );
-    exit ( 5 );
-  }
-
-  while(filename[j] != '\0')
+  fprintf(fp, "%d %d %d %d %d \n", mA->l, mA->c, mA->var, mA->x, mA->y);
+  if(mA->var==1)
+    fprintf(fp, "%d\n", mA->pts);
+  if(mA->var==2)
   {
-    count++;
-    j++;
+    for( pI = 0; pI < mA->l ; pI++ ){
+      for( pJ = 0; pJ < mA->c ; pJ++ )
+        fprintf(fp ,"%d", GetPuzzleElement( mA, pI, pJ ) );
+      fprintf(fp, "\n" );
+    
+      }
   }
-
-  for(j = count; j <= count-2; j--)
-  {
-    free(filename[j]);
-  }
-
-  filename[count-2] = '\0';
-
-  strcpy ( nome, filename );
-  strcat ( nome, "step" );
-
-  PrintList(lp);
-
-  fclose ( f );
-  free(nome);
   return;
 
 }
