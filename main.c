@@ -54,7 +54,8 @@ int main(int argc, char *argv[])
 
   char *fileName;
   FILE *fmIn;
-  t_lista *lm;
+  FILE *test;
+  t_lista *lp;
 
   /* check if the program was correctly executes */
   if( argc < 2 )
@@ -69,17 +70,16 @@ int main(int argc, char *argv[])
   }
 
   /* read and save the Puzzles in the list */
-  lm = savePuzzles( fmIn );
+  lp = savePuzzles( fmIn );
 
   /* print list (optional) */
-  outputFile(fileName, lm);
+  //outputFile(fileName, lp);
 
   /* free all alocated memory */
-  libertaLista( lm, FreeItem );
+  libertaLista( lp, FreeItem );
 
   /* close the file */
   fclose(fmIn);
 
   exit(0);
 }
-

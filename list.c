@@ -17,6 +17,8 @@
 
 #include "defs.h"
 #include "list.h"
+#include "puzzle.h"
+#include "utils.h"
 
 
 /* Linked list  */
@@ -135,7 +137,7 @@ int numItensNaLista(t_lista *lm)
  * Description: free list
  *
  *****************************************************************************/
-void libertaLista(t_lista *lm, void freeItem(Item)) 
+void libertaLista(t_lista *lm, void freeItem(Item))
 {
   t_lista *aux, *newhead;  /* auxiliar pointers to travel through the list */
 
@@ -147,4 +149,3 @@ void libertaLista(t_lista *lm, void freeItem(Item))
 
   return;
 }
-

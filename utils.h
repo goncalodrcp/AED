@@ -23,8 +23,8 @@
 
 
 void erroMemoria(char *msg);
-t_lista *savePuzzles( FILE *fm);
-void PrintList(t_lista *lm, FILE *fm);
+t_lista *savePuzzles( FILE *fp);
+void PrintList(t_lista *lp, FILE *fp);
 void outputFile(char *inName, t_lista* lp);
 void FreeItem(Item this);
 

@@ -9,100 +9,82 @@
  *		implements functions for type t_puzzle
  *
  *****************************************************************************/
-
+#include "defs.h"
 #include <strings.h>
 #include "puzzle.h"
 #include "utils.h"
 
-struct _t_puzzle {
+/*struct _t_puzzle {
   int **values;
   int l, c, x, y, var, pts;
-};
+};*/
 
 /******************************************************************************
- * *NewPuzzle(int size)
+ * *NewPuzzle(int *puz_dt)
  *
- * Arguments: size - size of the square Puzzle (size x size)
+ * Arguments: puz_dt - Configuration parameters
  * Returns: (Puzzle *) pointer to actual word (string)
  * Side-Effects: none
  *
- * Description: returns the new Puzzle 
+ * Description: returns the new Puzzle
  *****************************************************************************/
 t_puzzle * NewPuzzle(int *puz_dt )
 {
-  t_puzzle * mA;
+  t_puzzle * pz;
   int pI, pJ;
   pI = pJ = 0;
 
   /* allocate space for the Puzzle */
-  mA = (t_puzzle*) malloc(sizeof(t_puzzle));
-  mA->values = (int**) malloc(puz_dt[0] * sizeof(int*));
+  pz = (t_puzzle*) malloc(sizeof(t_puzzle));
+  pz->values = (int**) malloc(puz_dt[0] * sizeof(int*));
   for ( pI = 0; pI < puz_dt[0]; pI++ )
-    mA->values[pI] = (int *) malloc(puz_dt[1] * sizeof(int));
- 
+    pz->values[pI] = (int *) malloc(puz_dt[1] * sizeof(int));
+
   /* initiate Puzzle */
   for ( pI =0; pI < puz_dt[0]; pI++ )
     for ( pJ =0; pJ < puz_dt[1]; pJ++ )
-      mA->values[pI][pJ] = 0;
-  
-  mA->l = puz_dt[0];
-  mA->c = puz_dt[1];
-  mA->var = puz_dt[2];
-  mA->x = puz_dt[3];
-  mA->y = puz_dt[4];
-  mA->pts = 0;
+      pz->values[pI][pJ] = 0;
 
-  return mA;
+  pz->l = puz_dt[0];
+  pz->c = puz_dt[1];
+  pz->var = puz_dt[2];
+  pz->x = puz_dt[3];
+  pz->y = puz_dt[4];
+  pz->pts = 0;
 
-}
-
-/******************************************************************************
- * GetPuzzleElement(Puzzle *mA, int pI, int pJ)
- *
- * Arguments: mA - (Puzzle *) the Puzzle
- *            pI - (int) row of the element
- *            pJ - (int) column if the element
- * Returns: (float) the value of the Puzzle that is in (pI, pJ)
- * Side-Effects: none
- *
- * Description: returns an element in the Puzzle (mA) in position (pI,pJ)
- *****************************************************************************/
-int GetPuzzleElement(t_puzzle *mA, int pI, int pJ)
-{
-
-  return mA->values[pI][pJ];
+  return pz;
 
 }
 
 /******************************************************************************
- * GetPuzzleInfo(t_puzzle *mA, int info)
+ * GetPuzzleInfo(t_puzzle *pz, int info)
  *
- * Arguments: mA - (Puzzle *) the Puzzle
+ * Arguments: pz - (Puzzle *) the Puzzle
  *            info - (int) what information about the puzzle is neded (1-Lines;
                       2-Columns; 3-Variable; 4-Line chosen; 5-Column chosen;
                       6-Points)
- *          
- * Returns: (float) the value of the Puzzle that is in (pI, pJ)
+ *
+ * Returns: (int) the value of the Puzzle that is in (pI, pJ)
  * Side-Effects: none
  *
- * Description: returns an element in the Puzzle (mA) in position (pI,pJ)
+ * Description: returns an element in the Puzzle (pz) in position (pI,pJ)
  *****************************************************************************/
 
-int GetPuzzleInfo(t_puzzle *mA, int info)
+int GetPuzzleInfo(t_puzzle *pz, int info)
 {
   switch(info) {
     case '1' :
-      return mA->l;
+      return pz->l;
     case '2' :
-      return mA->c;
+      return pz->c;
     case '3' :
-      return mA->x;
+      return pz->x;
     case '4' :
-      return mA->y;
+      return pz->y;
     case '5' :
-      return mA->var;
+      return pz->var;
     case '6' :
-      return mA->pts;
+      return pz->pts;
     default :
       return -1;
    }
@@ -110,76 +92,52 @@ int GetPuzzleInfo(t_puzzle *mA, int info)
 }
 
 /******************************************************************************
- * SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value)
+ * FreePuzzle(t_puzzle *pz)
  *
- * Arguments: mA    - (t_puzzle *) the Puzzle
- *            pI    - (int) row of the element
- *            pJ    - (int) column if the element
- *            value - (float) value to include int the Puzzle 
- * Returns: (void) nothing 
- * Side-Effects: none
- *
- * Description: function to include an element (value) in the Puzzle (mA),
- *              in position (pI, pJ)
- *****************************************************************************/
-void SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value)
-{
-
-  mA->values[pI][pJ] = value;
-
-  return;
-
-}
-
-
-  
-
-/******************************************************************************
- * FreePuzzle(t_puzzle *mA)
- *
- * Arguments: mA - (t_puzzle *) the Puzzle
+ * Arguments: pz - (t_puzzle *) the Puzzle
  * Returns: (void)
  * Side-Effects: none
  *
- * Description: free all the memory associated with the Puzzle mA
+ * Description: free all the memory associated with the Puzzle pz
  *****************************************************************************/
-void FreePuzzle(t_puzzle *mA)
+void FreePuzzle(t_puzzle *pz)
 {
   int i=0;
-  
-  for(i=0; i<mA->l; i++)
-    free(mA->values[i]);
-  free(mA->values);
-  free(mA);
+
+  for(i=0; i<pz->l; i++)
+    free(pz->values[i]);
+  free(pz->values);
+  free(pz);
 
   return;
 }
 
 /******************************************************************************
- * PrintPuzzle(t_puzzle *mA)
+ * PrintPuzzle(t_puzzle *pz)
  *
- * Arguments: mA - (t_puzzle *) the Puzzle
+ * Arguments: pz - (t_puzzle *) the Puzzle
  * Returns: (void)
  * Side-Effects: none
  *
- * Description: print the Puzzle pointed by mA
+ * Description: print the Puzzle pointed by pz
  *****************************************************************************/
-void PrintPuzzle(t_puzzle *mA, FILE* fp)
+void PrintPuzzle(t_puzzle *pz, FILE* fp)
 {
- 
+
   int pI, pJ;
 
-  fprintf(fp, "%d %d %d %d %d \n", mA->l, mA->c, mA->var, mA->x, mA->y);
-  if(mA->var==1)
-    fprintf(fp, "%d\n", mA->pts);
-  if(mA->var==2)
+  fprintf(fp, "%d %d %d %d %d \n", pz->l, pz->c, pz->var, pz->x, pz->y);
+  if(pz->var==1)
+    fprintf(fp, "%d\n", pz->pts);
+  if(pz->var==2)
   {
-    for( pI = 0; pI < mA->l ; pI++ ){
-      for( pJ = 0; pJ < mA->c ; pJ++ )
-        fprintf(fp ,"%d", GetPuzzleElement( mA, pI, pJ ) );
+    for( pI = 0; pI < pz->l ; pI++ ){
+      for( pJ = 0; pJ < pz->c ; pJ++ )
+        fprintf(fp ,"%d ", pz->values[pI][pJ] );
       fprintf(fp, "\n" );
-    
-      }
+
+    }
+    fprintf(fp,"\n");
   }
   return;
 

@@ -19,14 +19,15 @@
 #include <string.h>
 
 /* type definition for structure to hold word */
-typedef struct _t_puzzle t_puzzle;
+typedef struct _t_puzzle {
+  int **values;
+  int l, c, x, y, var, pts;
+} t_puzzle;
 
 /* interface functions for the t_puzzle */
 t_puzzle* NewPuzzle(int *puz_dt);
-int GetPuzzleElement(t_puzzle *mA, int pI, int pJ);
-int GetPuzzleInfo(t_puzzle *mA, int info);
-void SetPuzzleElement(t_puzzle *mA, int pI, int pJ, float value);
-void FreePuzzle(t_puzzle *mA);
-void PrintPuzzle(t_puzzle *mA, FILE * fp);
+int GetPuzzleInfo(t_puzzle *pz, int info);
+void FreePuzzle(t_puzzle *pz);
+void PrintPuzzle(t_puzzle *pz, FILE * fp);
 
 #endif

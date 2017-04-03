@@ -55,16 +55,16 @@ void erroFileData( )
 /******************************************************************************
  *  savePuzzles ()
  *
- * Arguments:  fm - pointer to the file with the Puzzles
+ * Arguments:  fp - pointer to the file with the Puzzles
  * Returns: (void)
  * Side-Effects: none
  *
- * Description: save the Puzzles in fm, into mA. 
+ * Description: save the Puzzles in fp, into lp.
  *****************************************************************************/
-t_lista *savePuzzles( FILE *fm )
+t_lista *savePuzzles( FILE *fp )
 {
 
-  t_lista *lm;
+  t_lista *lp;
   t_puzzle *newPuzzle;
 
   int pJ, pI, err;
@@ -74,13 +74,13 @@ t_lista *savePuzzles( FILE *fm )
 
   printf("--> Loading Puzzles...");
 
-  lm = iniLista();
+  lp = iniLista();
 
 
-  while( 1 ){ 
+  while( 1 ){
 
     /* scan the information about the Puzzle */
-    if( fscanf( fm, "%d %d %d %d %d", &puz_dt[0], &puz_dt[1], &puz_dt[2], &puz_dt[3], &puz_dt[4]) != 5 )
+    if( fscanf( fp, "%d %d %d %d %d", &puz_dt[0], &puz_dt[1], &puz_dt[2], &puz_dt[3], &puz_dt[4]) != 5 )
       break;
 
     /* create a new Puzzle */
@@ -89,20 +89,22 @@ t_lista *savePuzzles( FILE *fm )
     /* save the Puzzle */
     for( pI = 0 ; pI < puz_dt[0] ; pI++ ){
       for( pJ = 0 ; pJ < puz_dt[1] ; pJ++ ){
-        if( fscanf( fm, "%d", &newEntry ) != 1 )
+        if( fscanf( fp, "%d", &newEntry ) != 1 )
         {
           erroFileData();
         }
-        SetPuzzleElement(newPuzzle, pI, pJ, newEntry);
+
+        newPuzzle->values[pI][pJ] = newEntry;
+        
       }
     }
- 
+
     NumberPuzzles++;
-    lm = criaNovoNoLista (lm, newPuzzle, &err);
+    lp = criaNovoNoLista (lp, newPuzzle, &err);
   }
 
   printf( "[DONE]\n" );
-  return lm;
+  return lp;
 
 }
 
@@ -110,23 +112,23 @@ t_lista *savePuzzles( FILE *fm )
 /******************************************************************************
  *  PrintList ()
  *
- * Arguments:  lm - pointer to the list
+ * Arguments:  lp - pointer to the list
  * Returns: (void)
  * Side-Effects: none
  *
- * Description: print the list of Puzzles. 
+ * Description: print the list of Puzzles.
  *****************************************************************************/
-void PrintList(t_lista *lm, FILE * fm){
+void PrintList(t_lista *lp, FILE * fp){
 
   t_lista *aux;
-  t_puzzle *mA;
+  t_puzzle *pz;
 
   printf("--> Printing items saved in memory...\n");
 
-  aux = lm;
+  aux = lp;
   while( aux!= NULL ){
-    mA = (t_puzzle *)getItemLista( aux );
-    PrintPuzzle( mA, fm );
+    pz = (t_puzzle *)getItemLista( aux );
+    PrintPuzzle( pz, fp );
     aux = getProxElementoLista( aux );
   }
 
@@ -143,11 +145,11 @@ void PrintList(t_lista *lm, FILE * fm){
  * Returns: (void)
  * Side-Effects: outputs a file with the resultes of the program
  *
- * Description: prints the list to a new file called "inName.step" . 
+ * Description: prints the list to a new file called "inName.step" .
  *****************************************************************************/
 void outputFile(char *inName, t_lista* lp)
 {
-  FILE *fm;
+  FILE *fp;
   char *outName;
   int len = strlen(inName);
 
@@ -162,10 +164,10 @@ void outputFile(char *inName, t_lista* lp)
   strcpy ( outName, inName );
   strcat ( outName, "step" );
 
-  fm = fopen(outName, "w");
-  PrintList(lp, fm);
+  fp = fopen(outName, "w");
+  PrintList(lp, fp);
 
-  fclose ( fm );
+  fclose ( fp );
   free(outName);
   return;
 
@@ -188,4 +190,3 @@ void FreeItem( Item this )
 
   return;
 }
-
