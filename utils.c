@@ -123,12 +123,31 @@ void PrintList(t_lista *lp, FILE * fp){
   t_lista *aux;
   t_puzzle *pz;
 
-  printf("--> Printing items saved in memory...\n");
+  printf("--> Printing items saved in memory...");
 
   aux = lp;
   while( aux!= NULL ){
     pz = (t_puzzle *)getItemLista( aux );
     PrintPuzzle( pz, fp );
+    aux = getProxElementoLista( aux );
+  }
+
+  printf( "...[DONE]\n" );
+
+  return;
+}
+
+void OrganizeList(t_lista *lp){
+
+  t_lista *aux;
+  t_puzzle *pz;
+
+  printf("--> Organizing Puzzles ...");
+
+  aux = lp;
+  while( aux!= NULL ){
+    pz = (t_puzzle *)getItemLista( aux );
+    OrganizePuzzle(pz);
     aux = getProxElementoLista( aux );
   }
 
@@ -147,8 +166,8 @@ void PrintList(t_lista *lp, FILE * fp){
  *
  * Description: prints the list to a new file called "inName.step" .
  *****************************************************************************/
-void outputFile(char *inName, t_lista* lp)
-{
+void outputFile(char *inName, t_lista* lp){
+
   FILE *fp;
   char *outName;
   int len = strlen(inName);

@@ -142,3 +142,82 @@ void PrintPuzzle(t_puzzle *pz, FILE* fp)
   return;
 
 }
+
+void OrganizePuzzle(t_puzzle *pz)
+{
+	int pJ;
+
+	for(pJ = 0; pJ < pz->c; pJ++)
+		pushDown(pz->values, pz->l, pJ);
+
+  pushRight(pz->values, pz->l, pz->c);
+
+}
+
+void pushDown(int **mA, int l, int c_select)
+{
+	int pI_a, pI_b;
+
+  /* pointer a detectes a espace to fill with a number */
+	pI_a = l-1;
+	while(pI_a > 0) {
+    /* pointer a detectes a espace to fill with a number */
+		if(mA[pI_a][c_select] == -1) {
+			pI_b = pI_a - 1;
+			while(pI_b >= 0) {
+        /* pointer b detects a number to fill the space in pointer */
+				if(mA[pI_b][c_select] != -1) {
+					mA[pI_a][c_select] = mA[pI_b][c_select];
+					mA[pI_b][c_select] = -1;
+          /*the espace if filld, pointer a moves to the next one*/
+          pI_a--;
+				}
+
+				pI_b--;
+				/*in case it reaches the end of the column and finds no numbers exits the function */
+				if(pI_b<0)
+					return;
+			}
+
+		}
+    pI_a--;
+	}
+	return;
+}
+
+
+void pushRight(int **mA, int l, int c)
+{
+  int pJ_a, pJ_b, pI;
+
+  /* pointer a detectes a espace to fill with a number */
+  pJ_a = c-1;
+  while(pJ_a > 0) {
+    /* pointer a detectes a espace to fill with a number */
+    if(mA[l-1][pJ_a] == -1 ) {
+      pJ_b = pJ_a - 1;
+      while(pJ_b >= 0) {
+        /* pointer b detects a number to fill the space in pointer */
+        if(mA[l-1][pJ_b] != -1) {
+          pI = l - 1;
+          printf("\n!!!1!!!\n");
+          while((pI >= 0) && (mA[pI][pJ_b] != -1)){
+            printf("\n!!!2!!!\n");
+            mA[pI][pJ_a] = mA[pI][pJ_b];
+            mA[pI][pJ_b] = -1;
+            pI--;
+          }
+          /*the espace if filld, pointer a moves to the next one*/
+          pJ_a--;
+        }
+
+        pJ_b--;
+        /*in case it reaches the end of the column and finds no numbers exits the function */
+        if(pJ_b<0)
+          return;
+      }
+    }
+    pJ_a--;
+  }
+  return;
+}

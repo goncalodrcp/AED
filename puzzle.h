@@ -29,5 +29,8 @@ t_puzzle* NewPuzzle(int *puz_dt);
 int GetPuzzleInfo(t_puzzle *pz, int info);
 void FreePuzzle(t_puzzle *pz);
 void PrintPuzzle(t_puzzle *pz, FILE * fp);
+void OrganizePuzzle(t_puzzle *pz);
+void pushDown(int **mA, int l, int c_select);
+void pushRight(int **mA, int l, int c);
 
 #endif
